@@ -1,2 +1,2 @@
-model_checkpoint_path: "coverage_6_model.ckpt"
-all_model_checkpoint_paths: "coverage_6_model.ckpt"
+model_checkpoint_path: "coverage_obs_4_model.ckpt"
+all_model_checkpoint_paths: "coverage_obs_4_model.ckpt"
