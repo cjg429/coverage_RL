@@ -46,7 +46,7 @@ class CoverageEnv(gym.Env):
 
     def __init__(self):
 
-        self.dim = 6
+        self.dim = 4
         self.action_space = spaces.Discrete(4)
         #self.observation_space = spaces.Tuple([spaces.Discrete(100), spaces.Box(low=-1.0, high=1.0, shape=(10,10), dtype=np.float32)])
         self.observation_space = spaces.Tuple([spaces.Discrete(self.dim*self.dim), spaces.Box(low=-1.0, high=1.0, shape=(self.dim,self.dim))])
@@ -114,15 +114,15 @@ class CoverageEnv(gym.Env):
         done = col
         #pos = 10*x_pos + y_pos
         pos = self.dim*x_pos + y_pos
-        #map_next = map_next - 0.01       
-        i, j = np.where(map_next == -1)
+        map_next = map_next - 0.05    
+        #i, j = np.where(map_next == -1)
         np.clip(map_next, 0, 1, out=map_next)
-        map_next[i, j] = -1
+        #map_next[i, j] = -1
         map_next[x_pos, y_pos] = 1
 
         if not done:
             #reward = np.sum(map_next) - np.sum(map_curr)
-            reward = -1
+            reward = -1 + np.sum(map_next) - np.sum(map_curr)
             
         else:
             reward = -1000.0

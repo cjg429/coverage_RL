@@ -70,23 +70,23 @@ class CoverageObsEnv(gym.Env):
         
         if obs_x_pos == 0:
             if obs_y_pos == 0:
-                obs_action = random.sample([1,2], 1)
+                obs_action = random.sample([1,2], 1)[0]
             elif obs_y_pos == self.dim - 1:
-                obs_action = random.sample([2,3], 1)
+                obs_action = random.sample([2,3], 1)[0]
             else:
-                obs_action = random.sample([1,2,3], 1)
+                obs_action = random.sample([1,2,3], 1)[0]
         elif obs_y_pos == 0:
             if obs_x_pos == self.dim - 1:
-                obs_action = random.sample([0,1], 1)
+                obs_action = random.sample([0,1], 1)[0]
             else:    
-                obs_action = random.sample([0,1,2], 1)
+                obs_action = random.sample([0,1,2], 1)[0]
         elif obs_x_pos == self.dim - 1:
             if obs_y_pos == self.dim - 1:
-                obs_action = random.sample([0,3], 1)
+                obs_action = random.sample([0,3], 1)[0]
             else:
-                obs_action = random.sample([0,1,3], 1)
+                obs_action = random.sample([0,1,3], 1)[0]
         elif obs_y_pos == self.dim - 1:
-            obs_action = random.sample([0,2,3], 1)
+            obs_action = random.sample([0,2,3], 1)[0]
         else:
             obs_action = random.randint(0, 3)
         
@@ -98,7 +98,8 @@ class CoverageObsEnv(gym.Env):
             col = True
         elif action == 3 and obs_action == 1 and x_pos == obs_x_pos and y_pos == obs_y_pos + 1:
             col = True
-            
+         
+        #print("obs_pos: (",obs_x_pos,",",obs_y_pos,",), action: ",obs_action);
         if action == 0:
             x_pos = x_pos - 1
             if x_pos < 0:
@@ -122,20 +123,20 @@ class CoverageObsEnv(gym.Env):
                 
         if obs_action == 0:
             obs_x_pos = obs_x_pos - 1
-            if obs_x_pos < 0:
-                obs_x_pos = 0
+            #if obs_x_pos < 0:
+            #    obs_x_pos = 0
         elif obs_action == 1:
             obs_y_pos = obs_y_pos + 1
-            if obs_y_pos > self.dim - 1:
-                obs_y_pos = self.dim - 1
+            #if obs_y_pos > self.dim - 1:
+            #    obs_y_pos = self.dim - 1
         elif obs_action == 2:
             obs_x_pos = obs_x_pos + 1
-            if obs_x_pos > self.dim - 1:
-                obs_x_pos = self.dim - 1
+            #if obs_x_pos > self.dim - 1:
+            #    obs_x_pos = self.dim - 1
         else:
             obs_y_pos = obs_y_pos -1
-            if obs_y_pos < 0:
-                obs_y_pos = 0
+            #if obs_y_pos < 0:
+            #    obs_y_pos = 0
                 
         if x_pos == obs_x_pos and y_pos == obs_y_pos:
             col = True
@@ -151,7 +152,6 @@ class CoverageObsEnv(gym.Env):
         else:
             reward = -1000.0
         if np.sum(map_next) == self.dim * self.dim:
-            print("full cover")
             reward = 1000.0
             done = True
         self.state = (pos, obs_pos, map_next)
