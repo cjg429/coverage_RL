@@ -10,7 +10,7 @@ class CNNSQLAgent:
                  discount_factor = 0.995, epsilon_decay = 0.999, epsilon_min = 0.01,
                  learning_rate = 1e-3, # STEP SIZE
                  batch_size = 64, alpha = 0.3,
-                 memory_size = 10000, hidden_unit_size = 64, filter_size = 32, memory_mode = 'PER'):
+                 memory_size = 50000, hidden_unit_size = 64, filter_size = 32, memory_mode = 'PER'):
         self.seed = seed 
         self.pos_dim = pos_dim
         self.map_dim = map_dim
@@ -23,7 +23,7 @@ class CNNSQLAgent:
         self.epsilon_decay = epsilon_decay
         self.epsilon_min = epsilon_min
         self.batch_size = batch_size
-        self.train_start = 5000
+        self.train_start = 20000
         self.keep_conv = 0.8
         self.alpha = alpha
 
@@ -42,7 +42,8 @@ class CNNSQLAgent:
             self.build_model()
             self.build_loss()
             self.build_update_operation()
-            self.init_session()        
+            self.init_session()  
+        self.update_target()
     
     def build_placeholders(self):
         self.pos_ph = tf.placeholder(tf.float32, (None, self.pos_dim), 'pos')
@@ -148,8 +149,10 @@ class CNNSQLAgent:
             return random.randint(0, self.n_action - 1)
         else:
             q_value = self.get_prediction(obs) / self.alpha
-            exp_q = np.exp(q_value)
+            max_q = np.max(q_value)
+            exp_q = np.exp(q_value - max_q)
             act_prob = exp_q / exp_q.sum()
+            #print(act_prob[0])
             return np.random.choice(self.n_action, p=act_prob[0])
             
     def add_experience(self, obs, action, reward, next_obs, done):
@@ -188,7 +191,8 @@ class CNNSQLAgent:
 
             target = self.get_prediction(observations)
             next_q_value = self.get_prediction_old(next_observations)
-            next_v_value = self.alpha * np.log(np.sum(np.exp(next_q_value/ self.alpha), axis=1))
+            max_next_q = np.max(next_q_value, axis=1, keepdims=True)
+            next_v_value = self.alpha * np.log(np.sum(np.exp((next_q_value - max_next_q) / self.alpha), axis=1)) + self.alpha * max_next_q[:, 0]
 
             # BELLMAN UPDATE RULE 
             for i in range(self.batch_size):
