@@ -1,2 +1,0 @@
-model_checkpoint_path: "coverage_v1_cnn_sql_model.ckpt"
-all_model_checkpoint_paths: "coverage_v1_cnn_sql_model.ckpt"
